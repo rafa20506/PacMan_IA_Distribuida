@@ -66,5 +66,10 @@ public abstract class  Fantasma {
     public void dibujar(Graphics2D g2d) {
         g2d.setColor(color);
         g2d.fillRect((int) pos.getX() * 22, (int) pos.getY() * 22, ancho, alto);
+        for (Point a: mejor
+             ) {
+            g2d.fillRect((int) a.getX() * 22+8, (int) a.getY() * 22+8, 5, 5);
+        }
+
     }
 }

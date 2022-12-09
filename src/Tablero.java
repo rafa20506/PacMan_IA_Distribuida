@@ -11,28 +11,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.Timer;
 
 public class Tablero extends JPanel implements ActionListener {
 
-    private final int[][] tabla = {
-            {1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1},
-            {1, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1},
-            {1, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1},
-            {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-            {1, 0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 0, 0, 1},
-            {1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0, 1, 1, 1, 1},
-            {0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0},
-            {0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0},
-            {0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0},
-            {1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1},
-            {1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1},
-            {1, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1},
-            {0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0},
-            {1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1},
-            {1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1},
-            {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}};
+    private final int[][] tabla;
 
     private Timer timer;
     private int posPacAcX, posPacAcY, teclaX, teclaY, antX, antY;
@@ -40,11 +25,13 @@ public class Tablero extends JPanel implements ActionListener {
     private boolean inicio, murio;
     private PacMan pacman;
     private Fantasma f1, f2, f3;
+    private ArrayList<Fantasma> fantasmas;
 
-    public Tablero() {
+    public Tablero(PacMan pacman, ArrayList<Fantasma> fantasmas,int [][]mapa) {
+        tabla=mapa;
         this.setBackground(Color.orange);
-        posPacAcX = 0;
-        posPacAcY = 0;
+        posPacAcX = pacman.getPos().x;
+        posPacAcY = pacman.getPos().y;
         teclaX = 0;
         teclaY = 0;
         antX = 0;
@@ -53,10 +40,9 @@ public class Tablero extends JPanel implements ActionListener {
         direccion = 2;
         inicio = false;
         murio = false;
-        pacman = new PacMan(new Point(posPacAcX, posPacAcY), Color.YELLOW);
-        f1 = new FantasmaMeta(16, 0, 0, Color.RED, tabla);
-        f2 = new FantasmaMeta(16, 15, 0, Color.BLUE, tabla);
-        f3 = new FantasmaMeta(0, 15, 0, Color.GREEN, tabla);
+        this.pacman = pacman;
+        this.fantasmas=fantasmas;
+
         timer = new Timer(400, this);
         timer.start();
         addKeyListener(new Teclado());
@@ -115,15 +101,6 @@ public class Tablero extends JPanel implements ActionListener {
         g2d.dispose();
     }
 
-    public static void main(String[] args) {
-        JFrame j = new JFrame();
-        j.add(new Tablero());
-        j.setSize(390, 430);
-        j.setLocationRelativeTo(null);
-        j.setVisible(true);
-        j.setDefaultCloseOperation(j.EXIT_ON_CLOSE);
-    }
-
     @Override
     public void actionPerformed(ActionEvent e) {
         repaint();
@@ -167,23 +144,19 @@ public class Tablero extends JPanel implements ActionListener {
 
     private void dibujarFantasmas(Graphics2D g2d) {
         Point posActualPacman = new Point(posPacAcX, posPacAcY);
+        for (Fantasma f: fantasmas) {
+            if (f.capturo(posActualPacman)) {
+                murio = true;
+                numVidas--;
+                timer.stop();
 
-        if (f1.capturo(posActualPacman) || f2.capturo(posActualPacman) || f3.capturo(posActualPacman)) {
-            murio = true;
-            numVidas--;
-            timer.stop();
+            } else {
+                f.buscar(posActualPacman);
+                f.dibujar(g2d);
 
-        } else {
-            f1.buscar(posActualPacman);
-            f1.dibujar(g2d);
-
-            f2.buscar(posActualPacman);
-            f2.dibujar(g2d);
-
-            f3.buscar(posActualPacman);
-            f3.dibujar(g2d);
-
+            }
         }
+
 
     }
 
