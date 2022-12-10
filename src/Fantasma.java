@@ -1,4 +1,8 @@
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public abstract class  Fantasma {
@@ -55,9 +59,21 @@ public abstract class  Fantasma {
         return pos;
     }
 
-    public void dibujar(Graphics2D g2d) {
+    public void dibujar(Graphics2D g2d)  {
         g2d.setColor(color);
-        g2d.fillRect((int) pos.getX() * 22, (int) pos.getY() * 22, ancho, alto);
+        BufferedImage img = null;
+        try {
+            if(color==Color.RED)
+                img = ImageIO.read(new File("images/FantasmaRed.png"));
+            if(color==Color.BLUE)
+                img = ImageIO.read(new File("images/FantasmaBlue.png"));
+            if(color==Color.GREEN)
+                img = ImageIO.read(new File("images/FantasmaGreen.png"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        //g2d.fillRect((int) pos.getX() * 22, (int) pos.getY() * 22, ancho, alto);
+        g2d.drawImage(img, (int) pos.getX() * 22, (int) pos.getY() * 22, null);
         for (Point a: mejor
              ) {
             g2d.fillRect((int) a.getX() * 22+8, (int) a.getY() * 22+8, 5, 5);

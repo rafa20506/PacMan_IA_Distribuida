@@ -1,6 +1,10 @@
+import javax.imageio.ImageIO;
 import java.awt.Point;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 public class PacMan{
     private Point pos;
@@ -29,6 +33,13 @@ public class PacMan{
     }
     public void dibujar(Graphics2D g2d){
         g2d.setColor(color);
-        g2d.fillOval((int)pos.getX() * 22, (int)pos.getY() * 22, ancho, alto);
+        BufferedImage img = null;
+        try {
+            img = ImageIO.read(new File("images/pacman.png"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        g2d.drawImage(img, (int) pos.getX() * 22, (int) pos.getY() * 22, null);
+        //g2d.fillOval((int)pos.getX() * 22, (int)pos.getY() * 22, ancho, alto);
     }
 }
