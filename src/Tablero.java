@@ -1,10 +1,9 @@
-import java.applet.Applet;
-import java.applet.AudioClip;
 import java.awt.Color;
 import java.awt.Event;
 import java.awt.Font;
 import java.awt.FontMetrics;
-import javax.swing.JPanel;
+import javax.sound.sampled.*;
+import javax.swing.*;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -14,22 +13,20 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
-import java.net.MalformedURLException;
+import java.io.IOException;
 import java.util.ArrayList;
-import javax.swing.Timer;
 
 public class Tablero extends JPanel implements ActionListener {
 
     private final int[][] tabla;
 
-    private Timer timer;
+    private final Timer timer;
     private int posPacAcX, posPacAcY, teclaX, teclaY, antX, antY;
     private int numVidas, direccion;
     private boolean inicio, murio;
-    private PacMan pacman;
-    private Fantasma f1, f2, f3;
-    private ArrayList<Fantasma> fantasmas;
-    private AudioClip Minicio,pacmanMueve,pacmanMuere;
+    private final PacMan pacman;
+    private final ArrayList<Fantasma> fantasmas;
+    private Clip Minicio,pacmanMueve,pacmanMuere;
     public Tablero(PacMan pacman, ArrayList<Fantasma> fantasmas,int [][]mapa) {
         tabla=mapa;
         this.setBackground(Color.orange);
@@ -51,22 +48,20 @@ public class Tablero extends JPanel implements ActionListener {
         addKeyListener(new Teclado());
         setFocusable(true);
         setDoubleBuffered(true);
-        try{
 
-            File Url1=new File("sounds/pacman_beginning.wav");
-            File Url2=new File("sounds/pacman_chomp.wav");
-            File Url3=new File("sounds/pacman_death.wav");
-
-            Minicio = Applet.newAudioClip(Url1.toURI().toURL());
-            pacmanMueve = Applet.newAudioClip(Url2.toURI().toURL());
-            pacmanMuere = Applet.newAudioClip(Url3.toURI().toURL());
-            Minicio.loop();
-
-
-        }catch(Exception ex){
-
-            System.err.println(ex+" error");
-
+        try {
+            Minicio = AudioSystem.getClip();
+            pacmanMueve = AudioSystem.getClip();
+            pacmanMuere = AudioSystem.getClip();
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("sounds/pacman_beginning.wav").getAbsoluteFile());
+            Minicio.open(audioInputStream);
+            audioInputStream = AudioSystem.getAudioInputStream(new File("sounds/pacman_chomp.wav").getAbsoluteFile());
+            pacmanMueve.open(audioInputStream);
+            audioInputStream = AudioSystem.getAudioInputStream(new File("sounds/pacman_death.wav").getAbsoluteFile());
+            pacmanMuere.open(audioInputStream);
+            Minicio.loop(2);
+        } catch (IOException | LineUnavailableException | UnsupportedAudioFileException ex) {
+            JOptionPane.showMessageDialog(null, "Error en audio:\n" + ex.getMessage());
         }
     }
 
@@ -161,7 +156,7 @@ public class Tablero extends JPanel implements ActionListener {
         }
 
         pacman.setPos(new Point(posPacAcX, posPacAcY));
-        pacmanMueve.loop();
+        pacmanMueve.loop(3);
         pacman.dibujar(g2d);
     }
 
@@ -171,7 +166,7 @@ public class Tablero extends JPanel implements ActionListener {
             if (f.capturo(posActualPacman)) {
                 murio = true;
                 pacmanMueve.stop();
-                pacmanMuere.play();
+                pacmanMuere.start();
 
                 numVidas--;
                 timer.stop();
