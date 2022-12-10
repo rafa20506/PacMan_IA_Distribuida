@@ -22,15 +22,7 @@ public abstract class  Fantasma {
         alto = 22;
         mejor = new ArrayList<>();
         }
-    public void buscar(Point p) {
-
-        if (!mejor.isEmpty()) {
-            pos = mejor.remove(0);
-        } else {
-            calcular(p);
-            pos = mejor.remove(0);
-        }
-    }
+    public abstract void buscar(Point p);
     public abstract void calcular(Point p);
     protected abstract boolean rutear(ArrayList<Point> ruta, Point p, Point aux, boolean res);
     protected boolean esValido(int x, int y) {

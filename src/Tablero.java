@@ -1,3 +1,5 @@
+import java.applet.Applet;
+import java.applet.AudioClip;
 import java.awt.Color;
 import java.awt.Event;
 import java.awt.Font;
@@ -11,8 +13,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
-import javax.swing.JFrame;
 import javax.swing.Timer;
 
 public class Tablero extends JPanel implements ActionListener {
@@ -26,7 +29,7 @@ public class Tablero extends JPanel implements ActionListener {
     private PacMan pacman;
     private Fantasma f1, f2, f3;
     private ArrayList<Fantasma> fantasmas;
-
+    private AudioClip Minicio,pacmanMueve,pacmanMuere;
     public Tablero(PacMan pacman, ArrayList<Fantasma> fantasmas,int [][]mapa) {
         tabla=mapa;
         this.setBackground(Color.orange);
@@ -48,6 +51,23 @@ public class Tablero extends JPanel implements ActionListener {
         addKeyListener(new Teclado());
         setFocusable(true);
         setDoubleBuffered(true);
+        try{
+
+            File Url1=new File("sounds/pacman_beginning.wav");
+            File Url2=new File("sounds/pacman_chomp.wav");
+            File Url3=new File("sounds/pacman_death.wav");
+
+            Minicio = Applet.newAudioClip(Url1.toURI().toURL());
+            pacmanMueve = Applet.newAudioClip(Url2.toURI().toURL());
+            pacmanMuere = Applet.newAudioClip(Url3.toURI().toURL());
+            Minicio.loop();
+
+
+        }catch(Exception ex){
+
+            System.err.println(ex+" error");
+
+        }
     }
 
     @Override
@@ -112,7 +132,7 @@ public class Tablero extends JPanel implements ActionListener {
         //iniciarJuego();
     }
 
-    private void dibujar(Graphics2D g2d) {
+    private void dibujar(Graphics2D g2d){
         if (inicio) {
             iniciarJuego(g2d);
         } else {
@@ -124,6 +144,7 @@ public class Tablero extends JPanel implements ActionListener {
         int aux = posPacAcX + teclaX;
         int auy = posPacAcY + teclaY;
         if (esValido(aux, auy)) {
+
             posPacAcX += teclaX;
             posPacAcY += teclaY;
             antX = teclaX;
@@ -135,10 +156,12 @@ public class Tablero extends JPanel implements ActionListener {
                 posPacAcY += antY;
                 teclaX = antX;
                 teclaY = antY;
+
             }
         }
 
         pacman.setPos(new Point(posPacAcX, posPacAcY));
+        pacmanMueve.loop();
         pacman.dibujar(g2d);
     }
 
@@ -147,6 +170,9 @@ public class Tablero extends JPanel implements ActionListener {
         for (Fantasma f: fantasmas) {
             if (f.capturo(posActualPacman)) {
                 murio = true;
+                pacmanMueve.stop();
+                pacmanMuere.play();
+
                 numVidas--;
                 timer.stop();
 
@@ -200,6 +226,7 @@ public class Tablero extends JPanel implements ActionListener {
             } else {
                 if (key == 's' || key == 'S') {
                     inicio = true;
+                    Minicio.stop();
                     //iniciarJuego();
                 }
             }
