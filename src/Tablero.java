@@ -59,7 +59,7 @@ public class Tablero extends JPanel implements ActionListener {
             pacmanMueve.open(audioInputStream);
             audioInputStream = AudioSystem.getAudioInputStream(new File("sounds/pacman_death.wav").getAbsoluteFile());
             pacmanMuere.open(audioInputStream);
-            Minicio.loop(2);
+            Minicio.loop(Integer.MAX_VALUE);
         } catch (IOException | LineUnavailableException | UnsupportedAudioFileException ex) {
             JOptionPane.showMessageDialog(null, "Error en audio:\n" + ex.getMessage());
         }
@@ -149,14 +149,14 @@ public class Tablero extends JPanel implements ActionListener {
             if (esValido(posPacAcX + antX, posPacAcY + antY)) {
                 posPacAcX += antX;
                 posPacAcY += antY;
-                teclaX = antX;
-                teclaY = antY;
+                //teclaX = antX;
+                //teclaY = antY;
 
             }
         }
 
         pacman.setPos(new Point(posPacAcX, posPacAcY));
-        pacmanMueve.loop(3);
+        pacmanMueve.loop(Integer.MAX_VALUE);
         pacman.dibujar(g2d);
     }
 
