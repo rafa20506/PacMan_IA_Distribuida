@@ -168,7 +168,7 @@ public class Tablero extends JPanel implements ActionListener {
         boolean res2= (aux >= 0 && aux < tabla[0].length*22) && (auy >= 0 && auy < tabla.length*22) && tabla[(int)(((auy+21)/22))][(int)(((aux+21)/22))] != 0;
         System.out.println(aux + ">=0? && aux <" + tabla[0].length*22);
         System.out.println(auy + ">=0? && auy <" + tabla.length*22);
-        System.out.println("tabla["+(int)(((auy)/22))+"]["+(int)(((aux)/22))+"]");
+        //System.out.println("tabla["+(int)(((auy)/22))+"]["+(int)(((aux)/22))+"]");
         System.out.println(tabla[(int)(((auy)/22))][(int)(((aux)/22))]);
         System.out.println(res);
         System.out.println(res2);
