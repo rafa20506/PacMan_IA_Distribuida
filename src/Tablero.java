@@ -21,7 +21,8 @@ public class Tablero extends JPanel implements ActionListener {
 
     private Timer timer;
     private int posPacAcX, posPacAcY, teclaX, teclaY, antX, antY;
-    private int numVidas, direccion;
+    private int numVidas;
+    //private int direccion;
     private boolean inicio, murio;
     private PacMan pacman;
     private Fantasma f1, f2, f3;
@@ -37,7 +38,7 @@ public class Tablero extends JPanel implements ActionListener {
         antX = 0;
         antY = 0;
         numVidas = 3;
-        direccion = 2;
+        //direccion = 2;
         inicio = false;
         murio = false;
         this.pacman = pacman;
@@ -96,6 +97,7 @@ public class Tablero extends JPanel implements ActionListener {
     private void iniciarJuego(Graphics2D g2d) {
         dibujarTablero(g2d);
         dibujarPacMan(g2d);
+
         dibujarFantasmas(g2d);
         Toolkit.getDefaultToolkit().sync();
         g2d.dispose();
@@ -139,7 +141,7 @@ public class Tablero extends JPanel implements ActionListener {
         }
 
         pacman.setPos(new Point(posPacAcX, posPacAcY));
-        pacman.dibujar(g2d);
+        pacman.drawPacman(g2d);
     }
 
     private void dibujarFantasmas(Graphics2D g2d) {
@@ -163,12 +165,15 @@ public class Tablero extends JPanel implements ActionListener {
     private boolean esValido(int aux, int auy) {
         //boolean res= (aux >= 0 && aux < tabla[0].length) && (auy >= 0 && auy < tabla.length) && tabla[auy][aux] != 0;
         boolean res= (aux >= 0 && aux < tabla[0].length*22) && (auy >= 0 && auy < tabla.length*22) && tabla[(int)(((auy)/22))][(int)(((aux)/22))] != 0;
+        boolean res2= (aux >= 0 && aux < tabla[0].length*22) && (auy >= 0 && auy < tabla.length*22) && tabla[(int)(((auy+21)/22))][(int)(((aux+21)/22))] != 0;
         System.out.println(aux + ">=0? && aux <" + tabla[0].length*22);
         System.out.println(auy + ">=0? && auy <" + tabla.length*22);
         System.out.println("tabla["+(int)(((auy)/22))+"]["+(int)(((aux)/22))+"]");
         System.out.println(tabla[(int)(((auy)/22))][(int)(((aux)/22))]);
         System.out.println(res);
-        return res; 
+        System.out.println(res2);
+        System.out.println(res&&res2);
+        return res&&res2; 
     }
 
     class Teclado extends KeyAdapter {
@@ -180,19 +185,19 @@ public class Tablero extends JPanel implements ActionListener {
 
             if (inicio) {
                 if (key == KeyEvent.VK_LEFT) {
-                    direccion = 4;
+                    pacman.setDir(1);
                     teclaX = -1;
                     teclaY = 0;
                 } else if (key == KeyEvent.VK_RIGHT) {
-                    direccion = 2;
+                    pacman.setDir(2);
                     teclaX = 1;
                     teclaY = 0;
                 } else if (key == KeyEvent.VK_UP) {
-                    direccion = 1;
+                    pacman.setDir(3);
                     teclaX = 0;
                     teclaY = -1;
                 } else if (key == KeyEvent.VK_DOWN) {
-                    direccion = 3;
+                    pacman.setDir(4);
                     teclaX = 0;
                     teclaY = 1;
                 } else if (key == KeyEvent.VK_ESCAPE && timer.isRunning()) {

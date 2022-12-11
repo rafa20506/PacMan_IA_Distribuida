@@ -2,10 +2,12 @@ import java.awt.*;
 import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
+import javax.swing.JPanel;
+
 import java.awt.Image;
 import java.awt.image.ImageObserver;
 
-public abstract class  Fantasma implements ImageObserver {
+public abstract class  Fantasma extends JPanel {
     protected int posX;
     protected int posY;
     protected int velocidad;

@@ -60,9 +60,4 @@ public class FantasmaOptimo extends Fantasma {
 
         return mejor.size() > 0 ? true : false;
     }
-    @Override
-    public boolean imageUpdate(Image img, int infoflags, int x, int y, int width, int height) {
-        // TODO Auto-generated method stub
-        return false;
-    }
 }
