@@ -2,7 +2,8 @@ import java.awt.Color;
 import java.awt.Event;
 import java.awt.Font;
 import java.awt.FontMetrics;
-import javax.swing.JPanel;
+import javax.sound.sampled.*;
+import javax.swing.*;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -11,24 +12,25 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
-import javax.swing.JFrame;
-import javax.swing.Timer;
+import java.awt.Image;
+import javax.swing.ImageIcon;
 
 public class Tablero extends JPanel implements ActionListener {
 
     private final int[][] tabla;
 
-    private Timer timer;
+    private final Timer timer;
     private int posPacAcX, posPacAcY, teclaX, teclaY, antX, antY;
     private int numVidas, direccion;
-    private boolean inicio, murio;
-    private PacMan pacman;
-    private Fantasma f1, f2, f3;
-    private ArrayList<Fantasma> fantasmas;
-
+    private boolean inicio, murio, perdio;
+    private final PacMan pacman;
+    private final ArrayList<Fantasma> fantasmas;
+    private Clip Minicio,pacmanMueve,pacmanMuere;
     public Tablero(PacMan pacman, ArrayList<Fantasma> fantasmas,int [][]mapa) {
-        tabla=mapa;
+        tabla = mapa;
         this.setBackground(Color.orange);
         posPacAcX = pacman.getPos().x;
         posPacAcY = pacman.getPos().y;
@@ -40,6 +42,7 @@ public class Tablero extends JPanel implements ActionListener {
         direccion = 2;
         inicio = false;
         murio = false;
+        perdio = false;
         this.pacman = pacman;
         this.fantasmas=fantasmas;
 
@@ -48,13 +51,33 @@ public class Tablero extends JPanel implements ActionListener {
         addKeyListener(new Teclado());
         setFocusable(true);
         setDoubleBuffered(true);
+
+        try {
+            Minicio = AudioSystem.getClip();
+            pacmanMueve = AudioSystem.getClip();
+            pacmanMuere = AudioSystem.getClip();
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("sounds/pacman_beginning.wav").getAbsoluteFile());
+            Minicio.open(audioInputStream);
+            audioInputStream = AudioSystem.getAudioInputStream(new File("sounds/pacman_chomp.wav").getAbsoluteFile());
+            pacmanMueve.open(audioInputStream);
+            audioInputStream = AudioSystem.getAudioInputStream(new File("sounds/pacman_death.wav").getAbsoluteFile());
+            pacmanMuere.open(audioInputStream);
+            Minicio.loop(Integer.MAX_VALUE);
+        } catch (IOException | LineUnavailableException | UnsupportedAudioFileException ex) {
+            JOptionPane.showMessageDialog(null, "Error en audio:\n" + ex.getMessage());
+        }
     }
 
     @Override
     public void paint(Graphics g) {
         super.paint(g);
         Graphics2D g2d = (Graphics2D) g;
-        dibujar(g2d);
+        if(!perdio){
+            dibujar(g2d);
+        }else{
+            pantalla(g2d, "PERDISTE");
+        }
+        
 
     }
 
@@ -76,29 +99,55 @@ public class Tablero extends JPanel implements ActionListener {
             }
         }
     }
-
-    private void pantallaInicio(Graphics2D g2d) {
+    
+    private void dibujarVidas(Graphics2D g2d){
+        Image im = new ImageIcon(getClass().getResource("images/right1.gif")).getImage();
+        for(int i = 0; i < numVidas; i++){
+             g2d.setColor(Color.gray);
+             g2d.fillRect(i * 22, 361, 22, 22);
+             g2d.setColor(Color.BLACK);
+             g2d.drawRect(i * 22, 361, 22, 22);
+             g2d.drawImage(im, i * 22, 361, this);
+        }
+    }
+    private void pantalla(Graphics2D g2d, String msg) {
 
         g2d.setColor(new Color(0, 32, 48));
         g2d.fillRect(50, 380 / 2 - 30, 380 - 100, 50);
         g2d.setColor(Color.white);
         g2d.drawRect(50, 380 / 2 - 30, 380 - 100, 50);
 
-        String s = "Presiona s para empezar.";
         Font small = new Font("Helvetica", Font.BOLD, 15);
         FontMetrics metr = this.getFontMetrics(small);
 
         g2d.setColor(Color.white);
         g2d.setFont(small);
-        g2d.drawString(s, (390 - metr.stringWidth(s)) / 2, 380 / 2);
+        g2d.drawString(msg, (390 - metr.stringWidth(msg)) / 2, 380 / 2);
     }
 
     private void iniciarJuego(Graphics2D g2d) {
         dibujarTablero(g2d);
+        dibujarVidas(g2d);
         dibujarPacMan(g2d);
         dibujarFantasmas(g2d);
         Toolkit.getDefaultToolkit().sync();
         g2d.dispose();
+        Point posActualPacman = new Point(posPacAcX, posPacAcY);
+        if(atraparonPacman(posActualPacman)){
+            murio = true;
+            pacmanMueve.stop();
+            pacmanMuere.start();
+            numVidas--;
+            timer.stop();
+        }
+        if(murio){
+            if(numVidas > 0){
+                reiniciar();
+            }else{
+                perdio = true;
+                repaint();
+            }
+        }        
     }
 
     @Override
@@ -112,18 +161,21 @@ public class Tablero extends JPanel implements ActionListener {
         //iniciarJuego();
     }
 
-    private void dibujar(Graphics2D g2d) {
+    private void dibujar(Graphics2D g2d){
         if (inicio) {
-            iniciarJuego(g2d);
+            if(!perdio){
+                iniciarJuego(g2d); 
+            }
         } else {
-            pantallaInicio(g2d);
-        }
-    }
+            pantalla(g2d, "Presiona s para empezar.");
+        } 
+    } 
 
     private void dibujarPacMan(Graphics2D g2d) {
         int aux = posPacAcX + teclaX;
         int auy = posPacAcY + teclaY;
         if (esValido(aux, auy)) {
+
             posPacAcX += teclaX;
             posPacAcY += teclaY;
             antX = teclaX;
@@ -133,37 +185,75 @@ public class Tablero extends JPanel implements ActionListener {
             if (esValido(posPacAcX + antX, posPacAcY + antY)) {
                 posPacAcX += antX;
                 posPacAcY += antY;
-                teclaX = antX;
-                teclaY = antY;
+                //teclaX = antX;
+                //teclaY = antY;
+
             }
         }
 
         pacman.setPos(new Point(posPacAcX, posPacAcY));
-        pacman.dibujar(g2d);
+        pacmanMueve.loop(Integer.MAX_VALUE);
+        pacman.dibujar(g2d, direccion, this);
     }
 
     private void dibujarFantasmas(Graphics2D g2d) {
-        Point posActualPacman = new Point(posPacAcX, posPacAcY);
-        for (Fantasma f: fantasmas) {
-            if (f.capturo(posActualPacman)) {
-                murio = true;
-                numVidas--;
-                timer.stop();
-
-            } else {
+         Point posActualPacman = new Point(posPacAcX, posPacAcY); 
+         for (Fantasma f: fantasmas){
                 f.buscar(posActualPacman);
                 f.dibujar(g2d);
-
+         }   
+        
+        /*for (Fantasma f: fantasmas) {
+            if (f.capturo(posActualPacman)) {
+                murio = true;
+                pacmanMueve.stop();
+                pacmanMuere.start();
+                numVidas--;
+                timer.stop();
+                break;
             }
         }
-
-
-    }
-
+        if(murio){
+            if(numVidas > 0){               
+                reiniciar();
+            }else{
+            } 
+            
+        }else{
+            for (Fantasma f: fantasmas){
+                f.buscar(posActualPacman);
+                f.dibujar(g2d);
+            }            
+        } */
+    } 
     private boolean esValido(int aux, int auy) {
         return (aux >= 0 && aux < tabla[0].length) && (auy >= 0 && auy < tabla.length) && tabla[auy][aux] != 0;
     }
-
+    private void reiniciar(){
+        murio = false;
+        posPacAcX = 0;
+        posPacAcY = 0;
+        teclaX = 0;
+        teclaY = 0;
+        antX = 0;
+        antY = 0;
+        direccion = 2;
+        fantasmas.get(0).setPos(new Point(16, 0));
+        fantasmas.get(1).setPos(new Point(16, 15));
+        fantasmas.get(2).setPos(new Point(0, 15));
+        pacmanMuere.stop();
+        timer.start(); 
+    }
+    private boolean atraparonPacman(Point p){
+        boolean res = false;
+        for (Fantasma f: fantasmas){
+            if(f.capturo(p)){
+                res = true;
+                break;
+            }
+        }
+        return res;
+    }
     class Teclado extends KeyAdapter {
 
         @Override
@@ -200,6 +290,7 @@ public class Tablero extends JPanel implements ActionListener {
             } else {
                 if (key == 's' || key == 'S') {
                     inicio = true;
+                    Minicio.stop();
                     //iniciarJuego();
                 }
             }

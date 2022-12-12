@@ -5,6 +5,15 @@ public class FantasmaMeta extends Fantasma{
     public FantasmaMeta(int posX, int posY, int velocidad, Color color, int[][] mapa) {
         super(posX, posY, velocidad,color,mapa);
     }
+    public void buscar(Point p) {
+
+        if (!mejor.isEmpty()) {
+            pos = mejor.remove(0);
+        } else {
+            calcular(p);
+            pos = mejor.remove(0);
+        }
+    }
     @Override
     public void calcular(Point p) {
         int mejorDistancia = Integer.MAX_VALUE;
@@ -16,6 +25,7 @@ public class FantasmaMeta extends Fantasma{
         res = rutear(ruta, p, aux, res);
         System.out.println(res);
     }
+
 
     @Override
     protected boolean rutear(ArrayList<Point> ruta, Point p, Point aux, boolean res) {

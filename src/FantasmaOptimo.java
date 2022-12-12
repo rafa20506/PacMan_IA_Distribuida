@@ -7,6 +7,14 @@ public class FantasmaOptimo extends Fantasma {
     public FantasmaOptimo(int posX, int posY, int velocidad, Color color, int[][] mapa) {
         super(posX, posY, velocidad,color,mapa);
     }
+    public void buscar(Point p) {
+        calcular(p);
+        if (!mejor.isEmpty()) {
+            pos = mejor.remove(1);
+        } else {
+            pos = mejor.remove(1);
+        }
+    }
     @Override
     public void calcular(Point p) {
         int mejorDistancia = Integer.MAX_VALUE;

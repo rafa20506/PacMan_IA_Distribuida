@@ -1,0 +1,25 @@
+#BlueJ class context
+comment0.target=PacMan
+comment1.params=pos\ color
+comment1.target=PacMan(java.awt.Point,\ java.awt.Color)
+comment10.params=g2d\ t
+comment10.target=void\ drawPacmanRight(java.awt.Graphics2D,\ javax.swing.JPanel)
+comment11.params=
+comment11.target=void\ loadImages()
+comment2.params=
+comment2.target=java.awt.Color\ getColor()
+comment3.params=color
+comment3.target=void\ setColor(java.awt.Color)
+comment4.params=
+comment4.target=java.awt.Point\ getPos()
+comment5.params=pos
+comment5.target=void\ setPos(java.awt.Point)
+comment6.params=g2d\ direccion\ t
+comment6.target=void\ dibujar(java.awt.Graphics2D,\ int,\ javax.swing.JPanel)
+comment7.params=g2d\ t
+comment7.target=void\ drawPacmanUp(java.awt.Graphics2D,\ javax.swing.JPanel)
+comment8.params=g2d\ t
+comment8.target=void\ drawPacmanDown(java.awt.Graphics2D,\ javax.swing.JPanel)
+comment9.params=g2d\ t
+comment9.target=void\ drawPacnanLeft(java.awt.Graphics2D,\ javax.swing.JPanel)
+numComments=12

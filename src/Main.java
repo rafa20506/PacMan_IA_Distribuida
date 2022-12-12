@@ -27,8 +27,8 @@ public class Main {
         Fantasma f3 = new FantasmaMeta(0, 15, 0, Color.GREEN, mapa);
         fantasmas.add(f1);
         fantasmas.add(f2);
-        //fantasmas.add(f3);
-        PacMan pacman=new PacMan(new Point(0, 0), Color.YELLOW);
+        fantasmas.add(f3);
+        PacMan pacman = new PacMan(new Point(0, 0), Color.YELLOW);
         JFrame j = new JFrame();
         j.add(new Tablero(pacman,fantasmas,mapa));
         j.setSize(390, 430);

@@ -1,0 +1,11 @@
+#BlueJ class context
+comment0.target=FantasmaOptimo
+comment1.params=posX\ posY\ velocidad\ color\ mapa
+comment1.target=FantasmaOptimo(int,\ int,\ int,\ java.awt.Color,\ int[][])
+comment2.params=p
+comment2.target=void\ buscar(java.awt.Point)
+comment3.params=p
+comment3.target=void\ calcular(java.awt.Point)
+comment4.params=ruta\ p\ aux\ res
+comment4.target=boolean\ rutear(java.util.ArrayList,\ java.awt.Point,\ java.awt.Point,\ boolean)
+numComments=5
