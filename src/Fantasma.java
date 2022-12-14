@@ -42,6 +42,13 @@ public abstract class  Fantasma {
         }
         return res;
     }
+    public int calcularDistancia(int px,int py,int fx,int fy){
+        int res =Integer.MAX_VALUE;
+        if(esValido(fx,fy)){
+            res=(int)Math.sqrt(Math.pow(px-fx,2)+Math.pow(py-fy,2));
+        }
+        return res;
+    }
     public boolean capturo(Point p) {
         return pos.equals(p);
     }

@@ -192,7 +192,7 @@ public class Tablero extends JPanel implements ActionListener {
         }
 
         pacman.setPos(new Point(posPacAcX, posPacAcY));
-        pacmanMueve.loop(Integer.MAX_VALUE);
+        //pacmanMueve.loop(Integer.MAX_VALUE);
         pacman.dibujar(g2d, direccion, this);
     }
 
@@ -239,10 +239,10 @@ public class Tablero extends JPanel implements ActionListener {
         antY = 0;
         direccion = 2;
         fantasmas.get(0).setPos(new Point(16, 0));
-        fantasmas.get(1).setPos(new Point(16, 15));
-        fantasmas.get(2).setPos(new Point(0, 15));
+        //fantasmas.get(1).setPos(new Point(16, 15));
+        //fantasmas.get(2).setPos(new Point(0, 15));
         pacmanMuere.stop();
-        timer.start(); 
+        timer.start();
     }
     private boolean atraparonPacman(Point p){
         boolean res = false;
