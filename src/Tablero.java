@@ -238,8 +238,8 @@ public class Tablero extends JPanel implements ActionListener {
         antX = 0;
         antY = 0;
         direccion = 2;
-        fantasmas.get(0).setPos(new Point(16, 0));
-        //fantasmas.get(1).setPos(new Point(16, 15));
+        fantasmas.get(0).setPos(new Point(6, 6));
+        fantasmas.get(1).setPos(new Point(3, 13));
         //fantasmas.get(2).setPos(new Point(0, 15));
         pacmanMuere.stop();
         timer.start();

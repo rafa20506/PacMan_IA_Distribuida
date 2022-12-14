@@ -63,24 +63,7 @@ public class FantasmaOptimo extends Fantasma {
                     res = rutear(ruta, p, new Point(nuevox, nuevoy), res);
                     //ruta.remove(ruta.size() - 1);
                 }
-                /*if (esValido((int) aux.getX(), (int) aux.getY() + 1)
-                        && !enciclado(new Point((int) aux.getX(), (int) aux.getY() + 1), ruta)) {
-                    ruta.add(new Point((int) aux.getX(), (int) aux.getY() + 1));
-                    res = rutear(ruta, p, new Point((int) aux.getX(), (int) aux.getY() + 1), res);
-                    ruta.remove(ruta.size() - 1);
-                }
-                if (esValido((int) aux.getX() - 1, (int) aux.getY())
-                        && !enciclado(new Point((int) aux.getX() - 1, (int) aux.getY()), ruta)) {
-                    ruta.add(new Point((int) aux.getX() - 1, (int) aux.getY()));
-                    res = rutear(ruta, p, new Point((int) aux.getX() - 1, (int) aux.getY()), res);
-                    ruta.remove(ruta.size() - 1);
-                }
-                if (esValido((int) aux.getX(), (int) aux.getY() - 1)
-                        && !enciclado(new Point((int) aux.getX(), (int) aux.getY() - 1), ruta)) {
-                    ruta.add(new Point((int) aux.getX(), (int) aux.getY() - 1));
-                    res = rutear(ruta, p, new Point((int) aux.getX(), (int) aux.getY() - 1), res);
-                    ruta.remove(ruta.size() - 1);
-                }*/
+
             }
         } else {
             res = true;
