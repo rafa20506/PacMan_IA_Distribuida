@@ -42,9 +42,9 @@ public abstract class  Fantasma {
         }
         return res;
     }
-    public int calcularDistancia(int px,int py,int fx,int fy){
-        int res =Integer.MAX_VALUE;
-        if(esValido(fx,fy)){
+    public double calcularDistancia(int px,int py,int fx,int fy,ArrayList<Point>ruta){
+        double res =Double.MAX_VALUE;
+        if(esValido(fx,fy)&&!enciclado(new Point(fx,fy),ruta)){
             res=(int)Math.sqrt(Math.pow(px-fx,2)+Math.pow(py-fy,2));
         }
         return res;
