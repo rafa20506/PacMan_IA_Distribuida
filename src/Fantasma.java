@@ -25,7 +25,7 @@ public abstract class  Fantasma {
         ancho = 22;
         alto = 22;
         mejor = new ArrayList<>();
-        }
+    }
     public abstract void buscar(Point p);
     public abstract void calcular(Point p);
     protected abstract boolean rutear(ArrayList<Point> ruta, Point p, Point aux, boolean res);
@@ -39,6 +39,13 @@ public abstract class  Fantasma {
                 res = true;
                 break;
             }
+        }
+        return res;
+    }
+    public double calcularDistancia(int px,int py,int fx,int fy,ArrayList<Point>ruta){
+        double res =Double.MAX_VALUE;
+        if(esValido(fx,fy) && !enciclado(new Point(fx,fy),ruta)){
+            res=(int)Math.sqrt(Math.pow(px-fx,2)+Math.pow(py-fy,2));
         }
         return res;
     }
@@ -58,7 +65,10 @@ public abstract class  Fantasma {
     public Point getPos() {
         return pos;
     }
-
+    
+    public Color getColor(){
+        return color;
+    }
     public void dibujar(Graphics2D g2d)  {
         g2d.setColor(color);
         BufferedImage img = null;

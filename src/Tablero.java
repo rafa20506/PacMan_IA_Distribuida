@@ -17,7 +17,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.awt.Image;
 import javax.swing.ImageIcon;
-
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 public class Tablero extends JPanel implements ActionListener {
 
     private final int[][] tabla;
@@ -29,7 +33,8 @@ public class Tablero extends JPanel implements ActionListener {
     private final PacMan pacman;
     private final ArrayList<Fantasma> fantasmas;
     private Clip Minicio,pacmanMueve,pacmanMuere;
-    public Tablero(PacMan pacman, ArrayList<Fantasma> fantasmas,int [][]mapa) {
+    private Color c;
+    public Tablero(PacMan pacman, ArrayList<Fantasma> fantasmas,int [][]mapa, int numVidas) {
         tabla = mapa;
         this.setBackground(Color.orange);
         posPacAcX = pacman.getPos().x;
@@ -38,13 +43,14 @@ public class Tablero extends JPanel implements ActionListener {
         teclaY = 0;
         antX = 0;
         antY = 0;
-        numVidas = 3;
+        this.numVidas = numVidas;
         direccion = 2;
         inicio = false;
         murio = false;
         perdio = false;
         this.pacman = pacman;
         this.fantasmas=fantasmas;
+        this.c = null;
 
         timer = new Timer(400, this);
         timer.start();
@@ -113,16 +119,16 @@ public class Tablero extends JPanel implements ActionListener {
     private void pantalla(Graphics2D g2d, String msg) {
 
         g2d.setColor(new Color(0, 32, 48));
-        g2d.fillRect(50, 380 / 2 - 30, 380 - 100, 50);
+        g2d.fillRect(250, 380 / 2 - 30, 380 - 100, 50);
         g2d.setColor(Color.white);
-        g2d.drawRect(50, 380 / 2 - 30, 380 - 100, 50);
+        g2d.drawRect(250, 380 / 2 - 30, 380 - 100, 50);
 
         Font small = new Font("Helvetica", Font.BOLD, 15);
         FontMetrics metr = this.getFontMetrics(small);
 
         g2d.setColor(Color.white);
         g2d.setFont(small);
-        g2d.drawString(msg, (390 - metr.stringWidth(msg)) / 2, 380 / 2);
+        g2d.drawString(msg, (765 - metr.stringWidth(msg)) / 2, 380 / 2);
     }
 
     private void iniciarJuego(Graphics2D g2d) {
@@ -139,7 +145,7 @@ public class Tablero extends JPanel implements ActionListener {
             pacmanMuere.start();
             numVidas--;
             timer.stop();
-        }
+        } 
         if(murio){
             if(numVidas > 0){
                 reiniciar();
@@ -192,7 +198,7 @@ public class Tablero extends JPanel implements ActionListener {
         }
 
         pacman.setPos(new Point(posPacAcX, posPacAcY));
-        pacmanMueve.loop(Integer.MAX_VALUE);
+        //pacmanMueve.loop(Integer.MAX_VALUE);
         pacman.dibujar(g2d, direccion, this);
     }
 
@@ -230,6 +236,16 @@ public class Tablero extends JPanel implements ActionListener {
         return (aux >= 0 && aux < tabla[0].length) && (auy >= 0 && auy < tabla.length) && tabla[auy][aux] != 0;
     }
     private void reiniciar(){
+        Icon img = null;
+     
+            if(c ==Color.RED)
+                 img = new ImageIcon(getClass().getResource("images/FantasmaRed.png"));
+            if(c ==Color.BLUE)
+                img = new ImageIcon(getClass().getResource("images/FantasmaBlue.png"));
+            if(c ==Color.GREEN)
+                img = new ImageIcon(getClass().getResource("images/FantasmaGreen.png"));
+ 
+        JOptionPane.showMessageDialog(this, "", "GANO",JOptionPane.PLAIN_MESSAGE, img);
         murio = false;
         posPacAcX = 0;
         posPacAcY = 0;
@@ -238,17 +254,21 @@ public class Tablero extends JPanel implements ActionListener {
         antX = 0;
         antY = 0;
         direccion = 2;
-        fantasmas.get(0).setPos(new Point(16, 0));
-        fantasmas.get(1).setPos(new Point(16, 15));
-        fantasmas.get(2).setPos(new Point(0, 15));
+        fantasmas.get(0).setPos(new Point(33, 15));
+        fantasmas.get(0).mejor.clear();
+        fantasmas.get(1).setPos(new Point(0, 15));
+        fantasmas.get(1).mejor.clear();
+        //fantasmas.get(2).setPos(new Point(33, 0));
+        //fantasmas.get(2).mejor.clear();
         pacmanMuere.stop();
-        timer.start(); 
+        timer.start();
     }
     private boolean atraparonPacman(Point p){
         boolean res = false;
         for (Fantasma f: fantasmas){
             if(f.capturo(p)){
                 res = true;
+                c = f.getColor();
                 break;
             }
         }

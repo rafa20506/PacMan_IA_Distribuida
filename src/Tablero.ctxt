@@ -1,7 +1,7 @@
 #BlueJ class context
 comment0.target=Tablero
-comment1.params=pacman\ fantasmas\ mapa
-comment1.target=Tablero(PacMan,\ java.util.ArrayList,\ int[][])
+comment1.params=pacman\ fantasmas\ mapa\ numVidas
+comment1.target=Tablero(PacMan,\ java.util.ArrayList,\ int[][],\ int)
 comment10.params=g2d
 comment10.target=void\ dibujarPacMan(java.awt.Graphics2D)
 comment11.params=g2d
